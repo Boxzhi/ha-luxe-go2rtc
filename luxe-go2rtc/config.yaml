@@ -1,0 +1,21 @@
+name: Luxe go2rtc (HLC7)
+slug: luxe_go2rtc
+description: go2rtc 1.9.15 with Luxe HLC7, CS2 and MP4 compatibility fixes
+version: 1.9.15-luxe.1
+url: https://github.com/Boxzhi/go2rtc/tree/luxe/hlc7
+image: ghcr.io/boxzhi/ha-luxe-go2rtc-{arch}
+arch:
+  - amd64
+init: false
+startup: system
+host_network: true
+homeassistant_api: true
+video: true
+audio: true
+ingress: true
+ingress_port: 1984
+panel_icon: mdi:camera-wireless
+map:
+  - config:rw
+  - media
+  - ssl
