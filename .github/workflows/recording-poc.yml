@@ -57,7 +57,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          image="ghcr.io/${{ steps.owner.outputs.name }}/ha-luxe-go2rtc-recording-poc-amd64:1.9.15-luxe-poc.1"
+          image="ghcr.io/${{ steps.owner.outputs.name }}/ha-luxe-go2rtc-recording-poc-amd64:1.9.15-luxe-poc.2"
           docker pull "$image"
           docker rm -f luxe-recording-poc-smoke >/dev/null 2>&1 || true
           docker run -d --name luxe-recording-poc-smoke --network host "$image"
