@@ -34,7 +34,7 @@ After the first successful build, open the package in GitHub Packages and change
 A separate **Luxe go2rtc Recording POC** add-on is provided for validating native browser downloads without replacing the stable add-on.
 
 - Separate add-on slug: `luxe_go2rtc_recording_poc`.
-- Uses the CI-verified go2rtc recording-manager commit `76c005b12975152400d6620567406161130ce4b4`.
+- Uses the CI-verified go2rtc recording-manager commit `32460770f395964bcc82965de02c7db04eac0d2a`.
 - Connects to the existing stable add-on's three RTSP stream names through loopback port `8554`.
 - Listens only on API port `1985`; its RTSP and WebRTC servers are disabled to avoid port conflicts.
 - Opens the separate `/recording-poc.html` page through its own Ingress panel.

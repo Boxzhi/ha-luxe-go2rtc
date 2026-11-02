@@ -48,8 +48,7 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: |
-            ghcr.io/${{ steps.owner.outputs.name }}/ha-luxe-go2rtc-recording-poc-amd64:1.9.15-luxe-poc.6
-            ghcr.io/${{ steps.owner.outputs.name }}/ha-luxe-go2rtc-recording-poc-amd64:recording-poc
+            ghcr.io/${{ steps.owner.outputs.name }}/ha-luxe-go2rtc-recording-poc-amd64:1.9.15-luxe-poc.7
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -57,7 +56,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          image="ghcr.io/${{ steps.owner.outputs.name }}/ha-luxe-go2rtc-recording-poc-amd64:1.9.15-luxe-poc.6"
+          image="ghcr.io/${{ steps.owner.outputs.name }}/ha-luxe-go2rtc-recording-poc-amd64:1.9.15-luxe-poc.7"
           docker pull "$image"
           docker rm -f luxe-recording-poc-smoke >/dev/null 2>&1 || true
           docker run -d --name luxe-recording-poc-smoke --network host "$image"
@@ -81,6 +80,10 @@ jobs:
 
           curl -fsS http://127.0.0.1:1985/recording-opfs-poc.html -o /tmp/recording-opfs-poc.html
           grep -q "Luxe OPFS 流式下载 POC" /tmp/recording-opfs-poc.html
+          curl -fsS http://127.0.0.1:1985/recording-wkdownload-poc.html -o /tmp/recording-wkdownload-poc.html
+          grep -q "Luxe WKDownload 原生附件下载 POC" /tmp/recording-wkdownload-poc.html
+          grep -q 'download="luxe-wkdownload-poc-16mib.bin"' /tmp/recording-wkdownload-poc.html
+
           curl -fsS http://127.0.0.1:1985/recording-opfs-poc.js -o /tmp/recording-opfs-poc.js
           curl -fsS http://127.0.0.1:1985/recording-opfs-worker.js -o /tmp/recording-opfs-worker.js
           curl -fsS http://127.0.0.1:1985/recording-opfs-sw.js -o /tmp/recording-opfs-sw.js
@@ -89,6 +92,10 @@ jobs:
           grep -q 'createSyncAccessHandle' /tmp/recording-opfs-worker.js
           grep -q 'LUXE_OPFS_DOWNLOAD_REQUEST' /tmp/recording-opfs-sw.js
           grep -q 'MessageChannel' /tmp/recording-opfs-sw.js
+
+          status=$(curl -sS -o /tmp/recording-wkdownload-auth.json -w "%{http_code}" http://127.0.0.1:1985/api/luxe/recording-poc/download)
+          test "$status" = "401"
+          grep -q "Home Assistant Bearer token required" /tmp/recording-wkdownload-auth.json
 
           status=$(curl -sS -o /tmp/recording-auth.json -w "%{http_code}" http://127.0.0.1:1985/api/luxe/recordings)
           test "$status" = "401"

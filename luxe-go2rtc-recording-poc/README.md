@@ -6,6 +6,7 @@
 
 - Native go2rtc MP4 Consumer recording.
 - Native browser attachment download through Add-on Ingress.
+- HA iOS App WKWebView handoff to its native WKDownload manager (separate synthetic attachment test).
 - Three simultaneous recording sessions and three simultaneous downloads.
 - Independent stop and failure handling for each camera.
 - Supervisor-authenticated Ingress identity and path-scoped download cookies.
@@ -44,15 +45,26 @@ Default stream aliases:
 
 These aliases point to the corresponding RTSP stream names on the stable add-on. If those stream names or the stable RTSP port change, update the POC Dockerfile command arguments.
 
+## HA iOS App WKDownload POC
+
+Open `/recording-wkdownload-poc.html` from the OPFS POC page. This separate page verifies whether the Home Assistant iOS App's WKWebView hands a user-initiated same-origin HTTP attachment navigation to the app's native WKDownload manager.
+
+- The endpoint is `GET /api/luxe/recording-poc/download` and requires the authenticated Supervisor Ingress identity (or a valid Home Assistant Bearer token for direct requests).
+- It generates a deterministic 16 MiB `.bin` payload in 64 KiB chunks and returns `Content-Disposition: attachment`, an exact `Content-Length`, and an `X-Luxe-POC-CRC32` header.
+- It uses one bounded 64 KiB scratch buffer per request. It does not create a server-side file, write to NAS or Home Assistant `/media`, or retain the full payload in server memory.
+- It does not connect to a camera, call the Recording Manager, or use Blob, OPFS, Service Worker, or a JavaScript media buffer.
+- In the HA iOS App, tap **下载 16 MiB 测试文件**. Success means the app's native download manager appears and shows the filename/progress. After completion, use its native share action to save the file to the Files app.
+- This test validates only the WKDownload attachment handoff. It does not yet implement or validate OPFS-to-go2rtc streaming.
+
 ## Build
 
 The image is built from the CI-verified go2rtc commit:
 
-`f9ed2c41c767cbd0adbb46da20f8fd339985c2fe`
+`32460770f395964bcc82965de02c7db04eac0d2a`
 
 The POC workflow publishes only the separate image:
 
-`ghcr.io/boxzhi/ha-luxe-go2rtc-recording-poc-amd64:1.9.15-luxe-poc.6`
+`ghcr.io/boxzhi/ha-luxe-go2rtc-recording-poc-amd64:1.9.15-luxe-poc.7`
 
 If GitHub Packages marks the image private after the first build, change only this POC package to **Public** so Home Assistant can pull it.
 
