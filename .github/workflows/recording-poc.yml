@@ -48,7 +48,7 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: |
-            ghcr.io/${{ steps.owner.outputs.name }}/ha-luxe-go2rtc-recording-poc-amd64:1.9.15-luxe-poc.1
+            ghcr.io/${{ steps.owner.outputs.name }}/ha-luxe-go2rtc-recording-poc-amd64:1.9.15-luxe-poc.2
             ghcr.io/${{ steps.owner.outputs.name }}/ha-luxe-go2rtc-recording-poc-amd64:recording-poc
           cache-from: type=gha
           cache-to: type=gha,mode=max
