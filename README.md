@@ -53,7 +53,7 @@ This add-on intentionally mirrors the important runtime settings of the official
 - Ingress is exposed on port `1984`.
 - go2rtc reads `/config/go2rtc.yaml`.
 
-Only one go2rtc instance can run on the host at a time because both instances use the same host-network ports. Stop the official add-on before starting this one.
+Only one full go2rtc server instance can run on the host at a time because the stable and official instances use the same host-network ports. The isolated Recording POC is an exception: it binds only API port `1985` and disables its RTSP and WebRTC listeners, so it can run alongside the stable add-on.
 
 The add-on slug is different (`luxe_go2rtc`), but the WebRTC integration's default go2rtc endpoint (`http://localhost:1984/`) remains unchanged when host networking is used. The Ingress entry itself will belong to the new add-on.
 
