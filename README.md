@@ -29,6 +29,20 @@ After the first successful build, open the package in GitHub Packages and change
 4. Stop the official go2rtc add-on. Keep it installed and stopped for rollback.
 5. Install and start `Luxe go2rtc (HLC7)`.
 
+## Recording download POC
+
+A separate **Luxe go2rtc Recording POC** add-on is provided for validating native browser downloads without replacing the stable add-on.
+
+- Separate add-on slug: `luxe_go2rtc_recording_poc`.
+- Uses the CI-verified go2rtc recording-manager commit `1bb39591f1626935382848a42946a01e4345b2aa`.
+- Connects to the existing stable add-on's three RTSP stream names through loopback port `8554`.
+- Listens only on API port `1985`; its RTSP and WebRTC servers are disabled to avoid port conflicts.
+- Opens the separate `/recording-poc.html` page through its own Ingress panel.
+- Does not change the stable add-on image, config, or Release.
+- Does not write recordings to `/media`, disk, Blob, or OPFS.
+
+See [the POC add-on instructions](luxe-go2rtc-recording-poc/README.md). The POC is a test build, not a production Release.
+
 ## Compatibility and migration notes
 
 This add-on intentionally mirrors the important runtime settings of the official AlexxIT go2rtc add-on:
