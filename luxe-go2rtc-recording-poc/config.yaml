@@ -1,7 +1,7 @@
 name: Luxe go2rtc Recording POC
 slug: luxe_go2rtc_recording_poc
 description: Isolated native browser recording and parallel download proof of concept
-version: 1.9.15-luxe-poc.2
+version: 1.9.15-luxe-poc.3
 url: https://github.com/Boxzhi/go2rtc/tree/luxe/recording-manager-dev
 image: ghcr.io/boxzhi/ha-luxe-go2rtc-recording-poc-{arch}
 arch:
@@ -11,4 +11,5 @@ startup: system
 host_network: true
 ingress: true
 ingress_port: 1985
+ingress_entry: /recording-poc.html
 panel_icon: mdi:video-box
