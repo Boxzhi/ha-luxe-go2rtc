@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1.7
 
 ARG GO_VERSION=1.27
-ARG GO2RTC_REF=8b5e6880a1e15db1e109c9e7a49cd9d0f223a918
+ARG GO2RTC_REF=4cad9fd8aa53c6a819a2e7f0a6842117aaedb526
 
 FROM --platform=$BUILDPLATFORM golang:${GO_VERSION}-alpine AS build
 ARG TARGETOS
