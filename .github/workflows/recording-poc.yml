@@ -84,7 +84,11 @@ jobs:
           curl -fsS http://127.0.0.1:1985/recording-opfs-poc.js -o /tmp/recording-opfs-poc.js
           curl -fsS http://127.0.0.1:1985/recording-opfs-worker.js -o /tmp/recording-opfs-worker.js
           curl -fsS http://127.0.0.1:1985/recording-opfs-sw.js -o /tmp/recording-opfs-sw.js
-          ! grep -Eqi 'new[[:space:]]+Blob|createObjectURL|arrayBuffer\\(' /tmp/recording-opfs-poc.js /tmp/recording-opfs-worker.js /tmp/recording-opfs-sw.js
+          ! grep -Eqi 'new[[:space:]]+Blob|createObjectURL|arrayBuffer' /tmp/recording-opfs-poc.js /tmp/recording-opfs-worker.js /tmp/recording-opfs-sw.js
+          ! grep -Fq 'getFile()' /tmp/recording-opfs-poc.js /tmp/recording-opfs-worker.js /tmp/recording-opfs-sw.js
+          grep -q 'createSyncAccessHandle' /tmp/recording-opfs-worker.js
+          grep -q 'LUXE_OPFS_DOWNLOAD_REQUEST' /tmp/recording-opfs-sw.js
+          grep -q 'MessageChannel' /tmp/recording-opfs-sw.js
 
           status=$(curl -sS -o /tmp/recording-auth.json -w "%{http_code}" http://127.0.0.1:1985/api/luxe/recordings)
           test "$status" = "401"
