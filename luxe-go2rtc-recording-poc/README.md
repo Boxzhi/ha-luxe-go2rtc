@@ -31,11 +31,11 @@ The stable add-on must remain running while this POC is used.
 1. Refresh **Settings → Add-ons → Add-on Store** for the existing repository `https://github.com/Boxzhi/ha-luxe-go2rtc`.
 2. Install **Luxe go2rtc Recording POC**. Do not stop or uninstall the stable add-on.
 3. Start the POC add-on and open its Ingress panel. The panel opens `recording-poc.html` directly through `ingress_entry: recording-poc.html` (without a leading slash, because Supervisor appends the value to the ingress URL); do not append a path to the `/app/<slug>` Home Assistant panel URL.
-4. On the recording page, open the OPFS POC page and click **三路并发写入** to create synthetic `.bin` files in the current device's OPFS. For HA iOS App testing, open **打开 OPFS → WKDownload 集成测试页**; Service Worker is not used by that route.
+4. For the HA iOS App WKDownload test, open **打开 OPFS → WKDownload 集成测试页**. For the App Store Safari test, open **在 Safari 中测试三路独立下载** from the HA App page; the link opens Safari in a new browser context. Create the A/B/C test files inside Safari itself: HA App WKWebView OPFS and Safari OPFS are isolated and cannot share those files.
 5. For each camera, click **创建任务**, then **开始下载**. Repeat for all three cameras; the three download responses are independent and may run simultaneously.
 6. Use **停止录像** on one row and verify that the other two continue.
 7. Test camera MP4 files with `ffprobe`, QuickTime, Safari, and the Home Assistant iOS App.
-8. In either OPFS POC, manually remove test files only after confirming the downloaded copies are saved in the native download manager. A completed go2rtc response or CRC check is not itself an operating-system file-saved callback.
+8. In the HA App and Safari OPFS POCs, manually remove test files only after confirming the downloaded copies are saved in the corresponding native download manager. A completed stream or CRC check is not itself an operating-system file-saved callback.
 
 Default stream aliases:
 
@@ -69,15 +69,28 @@ Open `/recording-opfs-wkdownload-poc.html` from the OPFS POC page. This is the n
 - The POC first tests one 16 MiB synthetic file, then two concurrent files, then all three. The page reports server-side CRC32 and the number of bytes written to the attachment response. Confirm the iOS native download manager also shows **下载已完成** before cleaning OPFS.
 - This validates the OPFS-to-WKDownload relay only. It does not yet connect real camera MP4 data or modify the formal Luxe camera UI.
 
+## App Store Safari three-file download POC
+
+Open **在 Safari 中测试三路独立下载** from the HA App recording POC page. The link opens `/recording-opfs-safari-poc.html` in Safari. This is a separate Safari-only test; it does not modify the HA App's WKDownload manager.
+
+- The HA iOS App's WKWebView and Safari use separate browser storage contexts. Create the synthetic A/B/C files inside Safari; files previously written inside the HA App OPFS are not visible to Safari.
+- Confirm the page identifies the browser as Safari and reports secure context, OPFS, Dedicated Worker and Service Worker as available.
+- Click **三路并发写入** to create three independent 16 MiB synthetic files in Safari OPFS.
+- Tap A's **下载文件**, then B's, then C's. Each tap is a separate user gesture. Do not use an automatic multi-click script. If Safari asks whether to allow multiple downloads from this website, allow it.
+- Keep the Safari page open and inspect Safari's Downloads list. The acceptance target is three separate files, each completing independently; no ZIP is created.
+- The page streams each OPFS file through Service Worker + MessageChannel + Dedicated Worker in bounded 256 KiB chunks. It does not create Blob/File objects, Object URLs, or a whole-file JavaScript buffer. It does not upload video to go2rtc and does not write to NAS or Home Assistant storage.
+- After Safari's Downloads list confirms each file is saved, clean up each corresponding OPFS temporary file. A completed Service Worker response is not itself an OS file-saved callback.
+- This POC validates synthetic file download only. It does not yet validate real camera MP4, three 30-minute recordings, background execution, or downloads after the device is locked. Those require separate real-device tests.
+
 ## Build
 
 The image is built from the CI-verified go2rtc commit:
 
-`8b44541ce619655af39c3aad738bae710d5c81ad`
+`93c9be3ac1c01eaaf6b619e960535c937817698e`
 
 The POC workflow publishes only the separate image:
 
-`ghcr.io/boxzhi/ha-luxe-go2rtc-recording-poc-amd64:1.9.15-luxe-poc.8`
+`ghcr.io/boxzhi/ha-luxe-go2rtc-recording-poc-amd64:1.9.15-luxe-poc.9`
 
 If GitHub Packages marks the image private after the first build, change only this POC package to **Public** so Home Assistant can pull it.
 

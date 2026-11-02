@@ -48,7 +48,7 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: |
-            ghcr.io/${{ steps.owner.outputs.name }}/ha-luxe-go2rtc-recording-poc-amd64:1.9.15-luxe-poc.8
+            ghcr.io/${{ steps.owner.outputs.name }}/ha-luxe-go2rtc-recording-poc-amd64:1.9.15-luxe-poc.9
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -56,7 +56,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          image="ghcr.io/${{ steps.owner.outputs.name }}/ha-luxe-go2rtc-recording-poc-amd64:1.9.15-luxe-poc.8"
+          image="ghcr.io/${{ steps.owner.outputs.name }}/ha-luxe-go2rtc-recording-poc-amd64:1.9.15-luxe-poc.9"
           docker pull "$image"
           docker rm -f luxe-recording-poc-smoke >/dev/null 2>&1 || true
           docker run -d --name luxe-recording-poc-smoke --network host "$image"
@@ -92,6 +92,14 @@ jobs:
           curl -fsS http://127.0.0.1:1985/recording-opfs-relay-worker.js -o /tmp/recording-opfs-relay-worker.js
           grep -q "CHUNK_SIZE = 256 \* 1024" /tmp/recording-opfs-relay-worker.js
           ! grep -Eqi 'new[[:space:]]+Blob|createObjectURL|arrayBuffer[(]|new[[:space:]]+File' /tmp/recording-opfs-wkdownload-poc.js /tmp/recording-opfs-relay-worker.js
+
+          curl -fsS http://127.0.0.1:1985/recording-opfs-safari-poc.html -o /tmp/recording-opfs-safari-poc.html
+          grep -q "Luxe Safari OPFS 三路并发下载 POC" /tmp/recording-opfs-safari-poc.html
+          curl -fsS http://127.0.0.1:1985/recording-opfs-safari-poc.js -o /tmp/recording-opfs-safari-poc.js
+          grep -q 'anchor.download = record.fileName' /tmp/recording-opfs-safari-poc.js
+          grep -q '请使用 iPhone / iPad / Mac 的 Safari' /tmp/recording-opfs-safari-poc.js
+          ! grep -Eqi 'new[[:space:]]+Blob|createObjectURL|arrayBuffer[(]|new[[:space:]]+File' /tmp/recording-opfs-safari-poc.js
+          grep -q 'recording-opfs-safari-poc.html' /tmp/recording-opfs-sw.js
 
           curl -fsS http://127.0.0.1:1985/recording-opfs-poc.js -o /tmp/recording-opfs-poc.js
           curl -fsS http://127.0.0.1:1985/recording-opfs-worker.js -o /tmp/recording-opfs-worker.js
