@@ -47,7 +47,7 @@ These aliases point to the corresponding RTSP stream names on the stable add-on.
 
 The image is built from the CI-verified go2rtc commit:
 
-`1bb39591f1626935382848a42946a01e4345b2aa`
+`b093ef887713e1bd095754aaecae9bf3631d2e7f`
 
 The POC workflow publishes only the separate image:
 
