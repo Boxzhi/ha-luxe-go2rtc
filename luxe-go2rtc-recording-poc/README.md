@@ -86,11 +86,11 @@ Open **在 Safari 中测试三路独立下载** from the HA App recording POC pa
 
 The image is built from the CI-verified go2rtc commit:
 
-`93c9be3ac1c01eaaf6b619e960535c937817698e`
+`7ea764436a1367b337a75f4dbd7c3a9738d2d8c9`
 
 The POC workflow publishes only the separate image:
 
-`ghcr.io/boxzhi/ha-luxe-go2rtc-recording-poc-amd64:1.9.15-luxe-poc.9`
+`ghcr.io/boxzhi/ha-luxe-go2rtc-recording-poc-amd64:1.9.15-luxe-poc.10`
 
 If GitHub Packages marks the image private after the first build, change only this POC package to **Public** so Home Assistant can pull it.
 
