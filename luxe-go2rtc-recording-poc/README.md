@@ -11,7 +11,7 @@
 - Home Assistant Bearer-token validation and path-scoped download cookies.
 - H.264 / H.265 camera streams with supported camera audio.
 
-The POC does not use GPAC, Blob, OPFS, a JavaScript media buffer, a server-side recording directory, or the Home Assistant `/media` folder.
+The POC is built as a native Go binary and does not install or invoke FFmpeg or GPAC. It does not use Blob, OPFS, a JavaScript media buffer, a server-side recording directory, or the Home Assistant `/media` folder.
 
 ## Isolation from the stable add-on
 
