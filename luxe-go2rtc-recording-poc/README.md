@@ -33,7 +33,6 @@ The stable add-on must remain running while this POC is used.
 4. In the POC Ingress page, open `/recording-poc.html` (append this path to the POC Ingress address).
 5. For each camera, click **创建任务**, then **开始下载**. Repeat for all three cameras; the three download responses are independent and may run simultaneously.
 6. Use **停止录像** on one row and verify that the other two continue.
-7. After each test, check the downloaded file in Safari's Downloads list / Files app, then verify the MP4 with `ffprobe` and QuickTime.
 7. Test the downloaded files with `ffprobe`, QuickTime, Safari, and the Home Assistant iOS App.
 
 Default stream aliases:
