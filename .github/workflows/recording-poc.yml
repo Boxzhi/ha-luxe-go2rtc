@@ -52,3 +52,33 @@ jobs:
             ghcr.io/${{ steps.owner.outputs.name }}/ha-luxe-go2rtc-recording-poc-amd64:recording-poc
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Smoke test the published POC container
+        shell: bash
+        run: |
+          set -euo pipefail
+          image="ghcr.io/${{ steps.owner.outputs.name }}/ha-luxe-go2rtc-recording-poc-amd64:1.9.15-luxe-poc.1"
+          docker pull "$image"
+          docker rm -f luxe-recording-poc-smoke >/dev/null 2>&1 || true
+          docker run -d --name luxe-recording-poc-smoke --network host "$image"
+          cleanup() {
+            docker logs luxe-recording-poc-smoke || true
+            docker rm -f luxe-recording-poc-smoke >/dev/null 2>&1 || true
+          }
+          trap cleanup EXIT
+
+          for attempt in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:1985/recording-poc.html -o /tmp/recording-poc.html; then
+              break
+            fi
+            sleep 1
+          done
+
+          grep -q "Luxe 原生录像下载 POC" /tmp/recording-poc.html
+          curl -fsS http://127.0.0.1:1985/recording-poc.js -o /tmp/recording-poc.js
+          grep -q "startNativeDownload" /tmp/recording-poc.js
+          ! grep -Eq "new Blob|createObjectURL|navigator\.storage" /tmp/recording-poc.js
+
+          status=$(curl -sS -o /tmp/recording-auth.json -w "%{http_code}" http://127.0.0.1:1985/api/luxe/recordings)
+          test "$status" = "401"
+          grep -q "Home Assistant Bearer token required" /tmp/recording-auth.json
