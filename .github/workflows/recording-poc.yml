@@ -100,11 +100,11 @@ jobs:
           grep -q 'anchor.download = record.fileName' /tmp/recording-opfs-safari-poc.js
           grep -q '请使用 iPhone / iPad / Mac 的 Safari' /tmp/recording-opfs-safari-poc.js
           ! grep -Eqi 'new[[:space:]]+Blob|createObjectURL|arrayBuffer[(]|new[[:space:]]+File' /tmp/recording-opfs-safari-poc.js
-          grep -q 'recording-opfs-safari-poc.html' /tmp/recording-opfs-sw.js
 
           curl -fsS http://127.0.0.1:1985/recording-opfs-poc.js -o /tmp/recording-opfs-poc.js
           curl -fsS http://127.0.0.1:1985/recording-opfs-worker.js -o /tmp/recording-opfs-worker.js
           curl -fsS http://127.0.0.1:1985/recording-opfs-sw.js -o /tmp/recording-opfs-sw.js
+          grep -q 'recording-opfs-safari-poc.html' /tmp/recording-opfs-sw.js
           ! grep -Eqi 'new[[:space:]]+Blob|createObjectURL|arrayBuffer' /tmp/recording-opfs-poc.js /tmp/recording-opfs-worker.js /tmp/recording-opfs-sw.js
           ! grep -Fq 'getFile()' /tmp/recording-opfs-poc.js /tmp/recording-opfs-worker.js /tmp/recording-opfs-sw.js
           grep -q 'createSyncAccessHandle' /tmp/recording-opfs-worker.js
