@@ -10,11 +10,8 @@ init: false
 startup: system
 host_network: true
 homeassistant_api: true
-video: true
-audio: true
 ingress: true
 ingress_port: 1985
 panel_icon: mdi:video-box
 map:
   - config:rw
-  - ssl
