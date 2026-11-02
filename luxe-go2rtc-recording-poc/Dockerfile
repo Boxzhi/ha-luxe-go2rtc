@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1.7
 
 ARG GO_VERSION=1.27
-ARG GO2RTC_REF=b093ef887713e1bd095754aaecae9bf3631d2e7f
+ARG GO2RTC_REF=76c005b12975152400d6620567406161130ce4b4
 
 FROM --platform=$BUILDPLATFORM golang:${GO_VERSION}-alpine AS build
 ARG TARGETOS
@@ -38,4 +38,4 @@ WORKDIR /config
 # - API uses 1985 instead of 1984.
 # - RTSP server and WebRTC listener are disabled.
 # - The three test streams are RTSP aliases to the stable add-on on loopback.
-CMD ["go2rtc", "-config", "/config/go2rtc.yaml", "-config", "api.listen=\":1985\"", "-config", "rtsp.listen=\"\"", "-config", "webrtc.listen=\"\"", "-config", "streams.jinghuafu_keting_ptz_3k=rtsp://127.0.0.1:8554/jinghuafu_keting_ptz_3k", "-config", "streams.jinghuafu_keting_fixed_3k=rtsp://127.0.0.1:8554/jinghuafu_keting_fixed_3k", "-config", "streams.jinghuafu_canting_2k=rtsp://127.0.0.1:8554/jinghuafu_canting_2k"]
+CMD ["go2rtc", "-config", "api.listen=\":1985\"", "-config", "rtsp.listen=\"\"", "-config", "webrtc.listen=\"\"", "-config", "streams.jinghuafu_keting_ptz_3k=rtsp://127.0.0.1:8554/jinghuafu_keting_ptz_3k", "-config", "streams.jinghuafu_keting_fixed_3k=rtsp://127.0.0.1:8554/jinghuafu_keting_fixed_3k", "-config", "streams.jinghuafu_canting_2k=rtsp://127.0.0.1:8554/jinghuafu_canting_2k"]
