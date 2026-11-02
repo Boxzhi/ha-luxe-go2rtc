@@ -34,12 +34,13 @@ After the first successful build, open the package in GitHub Packages and change
 A separate **Luxe go2rtc Recording POC** add-on is provided for validating native browser downloads without replacing the stable add-on.
 
 - Separate add-on slug: `luxe_go2rtc_recording_poc`.
-- Uses the CI-verified go2rtc recording-manager commit `32460770f395964bcc82965de02c7db04eac0d2a`.
+- Uses the CI-verified go2rtc recording-manager commit `8b44541ce619655af39c3aad738bae710d5c81ad`.
 - Connects to the existing stable add-on's three RTSP stream names through loopback port `8554`.
 - Listens only on API port `1985`; its RTSP and WebRTC servers are disabled to avoid port conflicts.
 - Opens the separate `/recording-poc.html` page through its own Ingress panel.
 - Does not change the stable add-on image, config, or Release.
-- Does not mount the stable add-on's `/config` or `/media`; does not write recordings to disk, Blob, or OPFS.
+- Includes an OPFS → WKDownload integration POC using a bounded, unbuffered in-memory pipe; no complete video cache is kept on the server.
+- Does not mount the stable add-on's `/config` or `/media`; does not persist recordings on NAS, Home Assistant, or go2rtc disk. The browser-local OPFS POC uses temporary storage on the current device.
 
 See [the POC add-on instructions](luxe-go2rtc-recording-poc/README.md). The POC is a test build, not a production Release.
 

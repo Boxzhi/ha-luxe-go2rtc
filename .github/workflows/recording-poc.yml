@@ -48,7 +48,7 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: |
-            ghcr.io/${{ steps.owner.outputs.name }}/ha-luxe-go2rtc-recording-poc-amd64:1.9.15-luxe-poc.7
+            ghcr.io/${{ steps.owner.outputs.name }}/ha-luxe-go2rtc-recording-poc-amd64:1.9.15-luxe-poc.8
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -56,7 +56,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          image="ghcr.io/${{ steps.owner.outputs.name }}/ha-luxe-go2rtc-recording-poc-amd64:1.9.15-luxe-poc.7"
+          image="ghcr.io/${{ steps.owner.outputs.name }}/ha-luxe-go2rtc-recording-poc-amd64:1.9.15-luxe-poc.8"
           docker pull "$image"
           docker rm -f luxe-recording-poc-smoke >/dev/null 2>&1 || true
           docker run -d --name luxe-recording-poc-smoke --network host "$image"
@@ -84,6 +84,15 @@ jobs:
           grep -q "Luxe WKDownload 原生附件下载 POC" /tmp/recording-wkdownload-poc.html
           grep -q 'download="luxe-wkdownload-poc-16mib.bin"' /tmp/recording-wkdownload-poc.html
 
+          curl -fsS http://127.0.0.1:1985/recording-opfs-wkdownload-poc.html -o /tmp/recording-opfs-wkdownload-poc.html
+          grep -q "Luxe OPFS → WKDownload 集成 POC" /tmp/recording-opfs-wkdownload-poc.html
+          curl -fsS http://127.0.0.1:1985/recording-opfs-wkdownload-poc.js -o /tmp/recording-opfs-wkdownload-poc.js
+          grep -q "创建中转任务" /tmp/recording-opfs-wkdownload-poc.js
+          grep -q "download_started" /tmp/recording-opfs-wkdownload-poc.js
+          curl -fsS http://127.0.0.1:1985/recording-opfs-relay-worker.js -o /tmp/recording-opfs-relay-worker.js
+          grep -q "CHUNK_SIZE = 256 \* 1024" /tmp/recording-opfs-relay-worker.js
+          ! grep -Eqi 'new[[:space:]]+Blob|createObjectURL|arrayBuffer[(]|new[[:space:]]+File' /tmp/recording-opfs-wkdownload-poc.js /tmp/recording-opfs-relay-worker.js
+
           curl -fsS http://127.0.0.1:1985/recording-opfs-poc.js -o /tmp/recording-opfs-poc.js
           curl -fsS http://127.0.0.1:1985/recording-opfs-worker.js -o /tmp/recording-opfs-worker.js
           curl -fsS http://127.0.0.1:1985/recording-opfs-sw.js -o /tmp/recording-opfs-sw.js
@@ -96,6 +105,10 @@ jobs:
           status=$(curl -sS -o /tmp/recording-wkdownload-auth.json -w "%{http_code}" http://127.0.0.1:1985/api/luxe/recording-poc/download)
           test "$status" = "401"
           grep -q "Home Assistant Bearer token required" /tmp/recording-wkdownload-auth.json
+
+          status=$(curl -sS -o /tmp/recording-relay-auth.json -w "%{http_code}" -X POST http://127.0.0.1:1985/api/luxe/recording-poc/relay -H "Content-Type: application/json" -d '{}')
+          test "$status" = "401"
+          grep -q "Home Assistant Bearer token required" /tmp/recording-relay-auth.json
 
           status=$(curl -sS -o /tmp/recording-auth.json -w "%{http_code}" http://127.0.0.1:1985/api/luxe/recordings)
           test "$status" = "401"
