@@ -1,7 +1,6 @@
 # syntax=docker/dockerfile:1.7
 
 ARG GO_VERSION=1.27
-ARG PYTHON_VERSION=3.13
 ARG GO2RTC_REF=1bb39591f1626935382848a42946a01e4345b2aa
 
 FROM --platform=$BUILDPLATFORM golang:${GO_VERSION}-alpine AS build
@@ -24,15 +23,10 @@ RUN --mount=type=cache,target=/go/pkg/mod go mod download
 RUN --mount=type=cache,target=/root/.cache/go-build \
     CGO_ENABLED=0 go build -ldflags "-s -w" -trimpath -o /out/go2rtc .
 
-FROM python:${PYTHON_VERSION}-alpine AS runtime
-ARG TARGETARCH
+# The POC is native Go. No FFmpeg or GPAC runtime is installed or invoked.
+FROM alpine:3.22 AS runtime
 
-RUN apk add --no-cache \
-      tini ffmpeg ffplay bash curl jq alsa-plugins-pulse font-droid \
-    && if [ "${TARGETARCH}" = "amd64" ]; then \
-         apk add --no-cache libva-intel-driver intel-media-driver; \
-       fi
-
+RUN apk add --no-cache tini ca-certificates
 COPY --from=build /out/go2rtc /usr/local/bin/go2rtc
 
 EXPOSE 1985
