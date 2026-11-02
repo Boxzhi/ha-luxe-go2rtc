@@ -29,7 +29,7 @@ The stable add-on must remain running while this POC is used.
 
 1. Refresh **Settings → Add-ons → Add-on Store** for the existing repository `https://github.com/Boxzhi/ha-luxe-go2rtc`.
 2. Install **Luxe go2rtc Recording POC**. Do not stop or uninstall the stable add-on.
-3. Start the POC add-on and open its Ingress panel. The panel opens `recording-poc.html` directly through the `ingress_entry` setting; do not append a path to the `/app/<slug>` Home Assistant panel URL.
+3. Start the POC add-on and open its Ingress panel. The panel opens `recording-poc.html` directly through `ingress_entry: recording-poc.html` (without a leading slash, because Supervisor appends the value to the ingress URL); do not append a path to the `/app/<slug>` Home Assistant panel URL.
 5. For each camera, click **创建任务**, then **开始下载**. Repeat for all three cameras; the three download responses are independent and may run simultaneously.
 6. Use **停止录像** on one row and verify that the other two continue.
 7. Test the downloaded files with `ffprobe`, QuickTime, Safari, and the Home Assistant iOS App.
@@ -50,7 +50,7 @@ The image is built from the CI-verified go2rtc commit:
 
 The POC workflow publishes only the separate image:
 
-`ghcr.io/boxzhi/ha-luxe-go2rtc-recording-poc-amd64:1.9.15-luxe-poc.3`
+`ghcr.io/boxzhi/ha-luxe-go2rtc-recording-poc-amd64:1.9.15-luxe-poc.4`
 
 If GitHub Packages marks the image private after the first build, change only this POC package to **Public** so Home Assistant can pull it.
 
