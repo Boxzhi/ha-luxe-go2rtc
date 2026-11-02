@@ -11,7 +11,7 @@
 - Supervisor-authenticated Ingress identity and path-scoped download cookies.
 - H.264 / H.265 camera streams with supported camera audio.
 
-The POC is built as a native Go binary and does not install or invoke FFmpeg or GPAC. The existing camera-download test does not use Blob, OPFS, a JavaScript media buffer, a server-side recording directory, or the Home Assistant `/media` folder. A separate client-only OPFS POC is available from the recording page; it writes synthetic test data only to the current browser device and streams it back through a Service Worker.
+The POC is built as a native Go binary and does not install or invoke FFmpeg or GPAC. The existing camera-download test does not use Blob, OPFS, a JavaScript media buffer, a server-side recording directory, or the Home Assistant `/media` folder. A separate client-only OPFS POC is available from the recording page; it writes synthetic test data only to the current browser device and streams it back through a Service Worker and a Dedicated Worker using MessagePort. No File or Blob object is created.
 
 ## Isolation from the stable add-on
 
@@ -48,7 +48,7 @@ These aliases point to the corresponding RTSP stream names on the stable add-on.
 
 The image is built from the CI-verified go2rtc commit:
 
-`4cad9fd8aa53c6a819a2e7f0a6842117aaedb526`
+`f9ed2c41c767cbd0adbb46da20f8fd339985c2fe`
 
 The POC workflow publishes only the separate image:
 
