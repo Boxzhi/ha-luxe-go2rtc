@@ -11,7 +11,7 @@
 - Supervisor-authenticated Ingress identity and path-scoped download cookies.
 - H.264 / H.265 camera streams with supported camera audio.
 
-The POC is built as a native Go binary and does not install or invoke FFmpeg or GPAC. It does not use Blob, OPFS, a JavaScript media buffer, a server-side recording directory, or the Home Assistant `/media` folder.
+The POC is built as a native Go binary and does not install or invoke FFmpeg or GPAC. The existing camera-download test does not use Blob, OPFS, a JavaScript media buffer, a server-side recording directory, or the Home Assistant `/media` folder. A separate client-only OPFS POC is available from the recording page; it writes synthetic test data only to the current browser device and streams it back through a Service Worker.
 
 ## Isolation from the stable add-on
 
@@ -30,9 +30,11 @@ The stable add-on must remain running while this POC is used.
 1. Refresh **Settings → Add-ons → Add-on Store** for the existing repository `https://github.com/Boxzhi/ha-luxe-go2rtc`.
 2. Install **Luxe go2rtc Recording POC**. Do not stop or uninstall the stable add-on.
 3. Start the POC add-on and open its Ingress panel. The panel opens `recording-poc.html` directly through `ingress_entry: recording-poc.html` (without a leading slash, because Supervisor appends the value to the ingress URL); do not append a path to the `/app/<slug>` Home Assistant panel URL.
+4. On the recording page, open **独立 OPFS 流式下载测试** to test browser-local OPFS and Service Worker downloads. This test uses synthetic `.bin` files, not camera video.
 5. For each camera, click **创建任务**, then **开始下载**. Repeat for all three cameras; the three download responses are independent and may run simultaneously.
 6. Use **停止录像** on one row and verify that the other two continue.
-7. Test the downloaded files with `ffprobe`, QuickTime, Safari, and the Home Assistant iOS App.
+7. Test camera MP4 files with `ffprobe`, QuickTime, Safari, and the Home Assistant iOS App.
+8. In the OPFS POC, manually remove test files only after confirming the downloaded copies are saved. The Service Worker stream reaching EOF is not a guaranteed OS file-saved callback.
 
 Default stream aliases:
 
@@ -46,11 +48,11 @@ These aliases point to the corresponding RTSP stream names on the stable add-on.
 
 The image is built from the CI-verified go2rtc commit:
 
-`76c005b12975152400d6620567406161130ce4b4`
+`8b5e6880a1e15db1e109c9e7a49cd9d0f223a918`
 
 The POC workflow publishes only the separate image:
 
-`ghcr.io/boxzhi/ha-luxe-go2rtc-recording-poc-amd64:1.9.15-luxe-poc.4`
+`ghcr.io/boxzhi/ha-luxe-go2rtc-recording-poc-amd64:1.9.15-luxe-poc.5`
 
 If GitHub Packages marks the image private after the first build, change only this POC package to **Public** so Home Assistant can pull it.
 
