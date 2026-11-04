@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.9.15-luxe.3 — 2026-11-04
+
+- Use Home Assistant's existing authenticated Supervisor Ingress session for recording; no additional recording secret, password, or UI dialog.
+- Go recorder API, including MP4 Range downloads, is accepted **only** from the Supervisor's documented Ingress proxy peer (172.30.32.2), and explicitly denied when reached via public 1984, even if a client forges HA user headers.
+- Recording module is still opt-in with `luxe_recording.enabled: true` in `go2rtc.yaml`; the old `secret` setting is no longer required and can be removed.
+- Single `luxe-camera-wall.js` v1.1.1 is used by the existing `custom:luxe-camera-wall` card; no RC test resource needed.
+- Previous HLC7, CS2, HEVC, video playback, 30-minute recording, 15-minute cache, multi-download, and iOS background cancellation logic preserved.
+
+**Upgrade order:** first the official Add-on image, then replace your single camera-wall JS resource and clear its cache. `1.9.15-luxe.2` remains available as a previous image tag for rollback.
+
+
 ## 1.9.15-luxe.2 — 2026-11-04
 
 - Integrated the Luxe Xiaomi Camera RC4 server-side recording module into the official go2rtc image.
