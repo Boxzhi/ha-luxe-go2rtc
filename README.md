@@ -1,61 +1,48 @@
-# Luxe go2rtc Add-on
+# Luxe go2rtc — official Home Assistant add-on
 
-Home Assistant add-on packaging for the Luxe HLC7-enabled go2rtc build.
+Home Assistant packaging for Boxzhi's HLC7-enabled go2rtc fork with optional server-side Xiaomi Camera recording.
 
-## Build source
+## Stable version
 
-The container build is pinned to go2rtc fork commit:
+**1.9.15-luxe.2**. The image is built from the exact merged go2rtc source commit:
 
-`d80b1a584a12dac318baa8316eb6ef975e645649`
+`443f0f93222e8ba6013e42b0d0c75def516ae8b3`
 
-Source branch: [Boxzhi/go2rtc `luxe/hlc7`](https://github.com/Boxzhi/go2rtc/tree/luxe/hlc7)
+Source: [Boxzhi/go2rtc · luxe/hlc7](https://github.com/Boxzhi/go2rtc/tree/luxe/hlc7)
 
-The add-on image is built for `linux/amd64`, matching the current Intel-based Home Assistant host.
+The official image is published to:
 
-## Automatic build
+`ghcr.io/boxzhi/ha-luxe-go2rtc-amd64:1.9.15-luxe.2`
 
-Pushing to `main` or manually running the GitHub Actions workflow builds and publishes:
+This repository provides the update of **Luxe go2rtc (HLC7)** from `1.9.15-luxe.1` without changing its add-on slug or the existing host-network ports.
 
-`ghcr.io/boxzhi/ha-luxe-go2rtc-amd64:1.9.15-luxe.1`
+## Installation or upgrade
 
-After the first successful build, open the package in GitHub Packages and change its visibility to **Public**. Home Assistant must be able to pull the image without registry credentials.
+Install this repository as a Home Assistant add-on repository:
 
-## Install in Home Assistant
+`https://github.com/Boxzhi/ha-luxe-go2rtc`
 
-1. Add this repository in **Settings → Add-ons → Add-on Store → ⋮ → Repositories**:
-   `https://github.com/Boxzhi/ha-luxe-go2rtc`
-2. Wait for the `Luxe go2rtc (HLC7)` add-on to appear.
-3. Back up the existing official go2rtc add-on and its configuration.
-4. Stop the official go2rtc add-on. Keep it installed and stopped for rollback.
-5. Install and start `Luxe go2rtc (HLC7)`.
+Existing installations receive the **1.9.15-luxe.2** update once the new container image is published and the add-on repository is refreshed.
 
-## Recording download POC
+After upgrade, **recording is disabled by default until configured**. In `/config/go2rtc.yaml` add:
 
-A separate **Luxe go2rtc Recording POC** add-on is provided for validating native browser downloads without replacing the stable add-on.
+```yaml
+luxe_recording:
+  enabled: true
+  secret: "LONG_RANDOM_SECRET_AT_LEAST_24_CHARACTERS"
+  directory: /data/luxe-recordings
+```
 
-- Separate add-on slug: `luxe_go2rtc_recording_poc`.
-- Uses the CI-verified go2rtc recording-manager commit `7ea764436a1367b337a75f4dbd7c3a9738d2d8c9`.
-- Connects to the existing stable add-on's three RTSP stream names through loopback port `8554`.
-- Listens only on API port `1985`; its RTSP and WebRTC servers are disabled to avoid port conflicts.
-- Opens the separate `/recording-poc.html` page through its own Ingress panel.
-- Does not change the stable add-on image, config, or Release.
-- Includes an OPFS → WKDownload integration POC for the HA App and a separate Safari OPFS three-file download POC. The Safari test streams three independent local files through a Service Worker without a server-side video cache.
-- Does not mount the stable add-on's `/config` or `/media`; does not persist recordings on NAS, Home Assistant, or go2rtc disk. The browser-local OPFS POC uses temporary storage on the current device.
+Save, restart the add-on, then upload the new single [`luxe-camera-wall.js`](https://github.com/Boxzhi/go2rtc/blob/luxe/hlc7/www/luxe-camera-wall.js) to `/config/www/`. The existing Lovelace `custom:luxe-camera-wall` card type remains unchanged.
 
-See [the POC add-on instructions](luxe-go2rtc-recording-poc/README.md). The POC is a test build, not a production Release.
+Remove the old `luxe-camera-wall-recording-rc.js` resource after verifying the integrated playback/recording UI. **The separate RC add-on is no longer required.**
 
-## Compatibility and migration notes
+See [add-on documentation](luxe-go2rtc/DOCS.md) and [changelog](luxe-go2rtc/CHANGELOG.md) for full details.
 
-This add-on intentionally mirrors the important runtime settings of the official AlexxIT go2rtc add-on:
+## Compatibility and rollback
 
-- Host networking is enabled.
-- The Home Assistant `/config`, `/media`, and `/ssl` folders are mapped.
-- Audio and video device access is enabled.
-- Ingress is exposed on port `1984`.
-- go2rtc reads `/config/go2rtc.yaml`.
+Existing HLC7, CS2, HEVC, audio, video and RTSP fixes are retained. The add-on uses the original `/config/go2rtc.yaml`, host-network `1984 / 8554 / 8555` and the same Ingress path.
 
-Only one full go2rtc server instance can run on the host at a time because the stable and official instances use the same host-network ports. The isolated Recording POC is an exception: it binds only API port `1985` and disables its RTSP and WebRTC listeners, so it can run alongside the stable add-on.
+Back up `go2rtc.yaml` and `luxe-camera-wall.js` before upgrade. The old `1.9.15-luxe.1` image is independent of the new release and may be used for manual rollback if retained. Do not stop a production stream before the new image build is available.
 
-The add-on slug is different (`luxe_go2rtc`), but the WebRTC integration's default go2rtc endpoint (`http://localhost:1984/`) remains unchanged when host networking is used. The Ingress entry itself will belong to the new add-on.
-
-Do not uninstall the official add-on until the new build has passed real-camera playback, audio, recording, and existing-stream regression tests.
+The earlier standalone Recording POC folder is historical development material, not a requirement for this stable release.

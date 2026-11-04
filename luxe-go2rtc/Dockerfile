@@ -2,7 +2,7 @@
 
 ARG GO_VERSION=1.27
 ARG PYTHON_VERSION=3.13
-ARG GO2RTC_REF=d80b1a584a12dac318baa8316eb6ef975e645649
+ARG GO2RTC_REF=443f0f93222e8ba6013e42b0d0c75def516ae8b3
 
 # Build the exact, CI-verified Luxe go2rtc source revision.
 FROM --platform=$BUILDPLATFORM golang:${GO_VERSION}-alpine AS build

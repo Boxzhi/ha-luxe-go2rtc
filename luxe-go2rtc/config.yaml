@@ -1,7 +1,7 @@
 name: Luxe go2rtc (HLC7)
 slug: luxe_go2rtc
-description: go2rtc 1.9.15 with Luxe HLC7, CS2 and MP4 compatibility fixes
-version: 1.9.15-luxe.1
+description: go2rtc 1.9.15 with Luxe HLC7 fixes and server-side Xiaomi Camera recording
+version: 1.9.15-luxe.2
 url: https://github.com/Boxzhi/go2rtc/tree/luxe/hlc7
 image: ghcr.io/boxzhi/ha-luxe-go2rtc-{arch}
 arch:
