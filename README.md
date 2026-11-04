@@ -4,15 +4,15 @@ Home Assistant packaging for Boxzhi's HLC7-enabled go2rtc fork with optional ser
 
 ## Stable version
 
-**1.9.15-luxe.2**. The image is built from the exact merged go2rtc source commit:
+**1.9.15-luxe.3**. The image is built from the exact merged go2rtc source commit:
 
-`443f0f93222e8ba6013e42b0d0c75def516ae8b3`
+`c98fb800dfcc901a38dd41c1262e1bc1a0f0668c`
 
 Source: [Boxzhi/go2rtc · luxe/hlc7](https://github.com/Boxzhi/go2rtc/tree/luxe/hlc7)
 
 The official image is published to:
 
-`ghcr.io/boxzhi/ha-luxe-go2rtc-amd64:1.9.15-luxe.2`
+`ghcr.io/boxzhi/ha-luxe-go2rtc-amd64:1.9.15-luxe.3`
 
 This repository provides the update of **Luxe go2rtc (HLC7)** from `1.9.15-luxe.1` without changing its add-on slug or the existing host-network ports.
 
@@ -22,18 +22,17 @@ Install this repository as a Home Assistant add-on repository:
 
 `https://github.com/Boxzhi/ha-luxe-go2rtc`
 
-Existing installations receive the **1.9.15-luxe.2** update once the new container image is published and the add-on repository is refreshed.
+Existing installations receive the **1.9.15-luxe.3** update once the new container image is published and the add-on repository is refreshed.
 
 After upgrade, **recording is disabled by default until configured**. In `/config/go2rtc.yaml` add:
 
 ```yaml
 luxe_recording:
   enabled: true
-  secret: "LONG_RANDOM_SECRET_AT_LEAST_24_CHARACTERS"
   directory: /data/luxe-recordings
 ```
 
-Save, restart the add-on, then upload the new single [`luxe-camera-wall.js`](https://github.com/Boxzhi/go2rtc/blob/luxe/hlc7/www/luxe-camera-wall.js) to `/config/www/`. The existing Lovelace `custom:luxe-camera-wall` card type remains unchanged.
+Save, restart the add-on, then upload the new single [`luxe-camera-wall.js`](https://github.com/Boxzhi/go2rtc/blob/luxe/hlc7/www/luxe-camera-wall.js) to `/config/www/`. The existing Lovelace `custom:luxe-camera-wall` card type remains unchanged. No additional recording secret or password prompt is required: HA Ingress verifies the authenticated session.
 
 Remove the old `luxe-camera-wall-recording-rc.js` resource after verifying the integrated playback/recording UI. **The separate RC add-on is no longer required.**
 
